@@ -11,11 +11,15 @@ import java.util.List;
 public class Main {
 
   public static void main(String[] args) {
-    int[] data = parseCommandLine(args); // TODO Change to parseInputStream()
-    System.out.println(Arrays.toString(data));
-    Shuffler shuffler = new Shuffler();
-    shuffler.shuffle(data);
-    System.out.println(Arrays.toString(data));
+    try {
+      int[] data = parseStandardInput();
+      System.out.println(Arrays.toString(data));
+      Shuffler shuffler = new Shuffler();
+      shuffler.shuffle(data);
+      System.out.println(Arrays.toString(data));
+    } catch (IOException | IllegalArgumentException e) {
+      System.err.println(e.getMessage());
+    }
   }
 
   private static int[] parseCommandLine(String[] args) {
@@ -39,7 +43,10 @@ public class Main {
     String input;
     try {
       while ((input = buffer.readLine()) != null) {
-        data.add(Integer.parseInt(input.strip()));
+        input = input.strip();
+        if (!input.isEmpty()) {
+          data.add(Integer.parseInt(input));
+        }
       }
     } catch (NumberFormatException e) {
       System.err.printf("Parsing failed! %s%n", e.getMessage());
